@@ -1,9 +1,15 @@
 from flask import Flask, flash, request, redirect, jsonify 
 import os
 from werkzeug.utils import secure_filename
+import whisper
+import torch
 
 UPLOAD_FOLDER = 'files'
-ALLOWED_EXTENSIONS = {'txt', 'pdf', 'png', 'jpg', 'jpeg', 'gif', 'mp3', 'wav'}
+ALLOWED_EXTENSIONS = {'mp3', 'wav'}
+
+# Cargando whisper
+device = 'cuda' if torch.cuda.is_available() else 'cpu'
+model_whisper = whisper.load_model("small").to(device)
 
 app = Flask(__name__)
 app.config['UPLOAD_FOLDER'] = UPLOAD_FOLDER
@@ -28,8 +34,16 @@ def main():
             flash('No selected file')
             return redirect(request.url)
         if file and allowed_file(file.filename):
-            #file.save(os.path.join(app.config['UPLOAD_FOLDER'], filename))
             file.save(os.path.join(app.instance_path, 'files', secure_filename(file.filename)))
+            # STT
+            result = model_whisper.transcribe("instance/files/" + secure_filename(file.filename))
+            print(result["text"])
+
+            # Deleting audio file
+            if os.path.exists("instance/files/" + secure_filename(file.filename)):
+                os.remove("instance/files/" + secure_filename(file.filename))
+            else:
+                print("The file does not exist")
             return redirect('/')
     return '''
     <!doctype html>
@@ -49,5 +63,3 @@ def jsonTest():
         "description" : "Server online", 
     }
     return jsonify(data)
-
-# TODO delete
