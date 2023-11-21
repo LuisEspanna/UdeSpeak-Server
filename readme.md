@@ -40,7 +40,11 @@ python -m venv .venv
 
 ## Activar el entorno virtual Python
 ```bash
+# Windows
 .venv\Scripts\activate
+
+# Linux
+source .venv/bin/activate
 ```
 
 ## Desactivar el entorno virtual Python
@@ -85,5 +89,39 @@ pip install Flask
 flask --app main.py run
 ```
 
+## Guardar las librerías usadas para crear requirements.txt
+```bash
+pip3 freeze > requirements.txt
+```
 
+# DOCKER
 
+## Crear la imagen
+```bash
+docker build -t flaskapi:latest .
+```
+
+## Crear un contenedor
+```bash
+docker create --gpus all -p5000:5000 --name udespeak flaskapi
+```
+
+## Listar los contenedores creados
+```bash
+docker ps -a
+```
+
+## Ejecutar el contenedor creado
+```bash
+docker start udespeak
+```
+
+## Ver los logs del servidor
+```bash
+docker logs --follow udespeak
+```
+
+## Parar el servidor
+```bash
+docker stop udespeak
+```
