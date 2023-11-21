@@ -37,14 +37,17 @@ def main():
             file.save(os.path.join(app.instance_path, 'files', secure_filename(file.filename)))
             # STT
             result = model_whisper.transcribe("instance/files/" + secure_filename(file.filename))
-            print(result["text"])
+
+            data = { 
+                "text" : result["text"], 
+            }
 
             # Deleting audio file
             if os.path.exists("instance/files/" + secure_filename(file.filename)):
                 os.remove("instance/files/" + secure_filename(file.filename))
             else:
                 print("The file does not exist")
-            return redirect('/')
+            return jsonify(data)
     return '''
     <!doctype html>
     <title>Upload new File</title>
