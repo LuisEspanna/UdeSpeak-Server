@@ -83,10 +83,14 @@ pip install gTTS
 ```bash
 pip install Flask
 ```
+## Instalar Flask
+```bash
+pip install -U flask-cors
+```
 
 ## Iniciar el servidor 
 ```bash
-flask --app main.py run
+flask --app app.py run
 ```
 
 ## Guardar las librerías usadas para crear requirements.txt
