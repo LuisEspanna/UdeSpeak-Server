@@ -1,9 +1,11 @@
-from flask import Flask, flash, request, redirect, jsonify 
+from flask import Flask, flash, request, redirect, jsonify, send_file, after_this_request
 import os
 from werkzeug.utils import secure_filename
 import whisper
 import torch
 from flask_cors import CORS
+from gtts import gTTS
+
 
 UPLOAD_FOLDER = 'files'
 ALLOWED_EXTENSIONS = {'mp3', 'wav'}
@@ -68,3 +70,30 @@ def jsonTest():
         "description" : "Server online", 
     }
     return jsonify(data)
+
+
+
+@app.route('/tts', methods=['POST'])
+def tts():
+    body = request.get_json();
+    language = body['language']
+    text = body['text']
+    speech = gTTS(text = text, lang = language, slow = False)
+    filename = body['name']
+    speech.save("instance/files/" + filename)
+    if os.path.exists("instance/files/" + filename):
+        result = send_file("instance/files/" + filename, as_attachment=True)
+        return result
+    else:
+        print("The file does not exist")
+    return jsonify({"status" : False})
+
+
+
+@app.route('/tts/<id>', methods=['DELETE'])
+def file_deleting(id):
+    if os.path.exists("instance/files/" + id):
+        os.remove("instance/files/" + id)
+    else:
+        print("The file does not exist")
+    return jsonify({"status" : True})
