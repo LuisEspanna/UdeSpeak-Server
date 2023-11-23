@@ -3,6 +3,7 @@ import os
 from werkzeug.utils import secure_filename
 import whisper
 import torch
+from flask_cors import CORS
 
 UPLOAD_FOLDER = 'files'
 ALLOWED_EXTENSIONS = {'mp3', 'wav'}
@@ -12,6 +13,7 @@ device = 'cuda' if torch.cuda.is_available() else 'cpu'
 model_whisper = whisper.load_model("small").to(device)
 
 app = Flask(__name__)
+CORS(app)
 app.config['UPLOAD_FOLDER'] = UPLOAD_FOLDER
 # create the folders when setting up your app
 os.makedirs(os.path.join(app.instance_path, 'files'), exist_ok=True)
