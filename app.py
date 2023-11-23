@@ -78,14 +78,16 @@ def tts():
     body = request.get_json();
     language = body['language']
     text = body['text']
-    speech = gTTS(text = text, lang = language, slow = False)
-    filename = body['name']
-    speech.save("instance/files/" + filename)
-    if os.path.exists("instance/files/" + filename):
-        result = send_file("instance/files/" + filename, as_attachment=True)
-        return result
-    else:
-        print("The file does not exist")
+    filename = body['filename']
+
+    if (language, text, filename ) is not None:
+        speech = gTTS(text = text, lang = language, slow = False)
+        speech.save("instance/files/" + filename)
+        if os.path.exists("instance/files/" + filename):
+            result = send_file("instance/files/" + filename, as_attachment=True)
+            return result
+        else:
+            print("The file does not exist")
     return jsonify({"status" : False})
 
 
