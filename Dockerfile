@@ -16,6 +16,7 @@ RUN apt-get install -y python3-pip
 #
 RUN apt-get install -y git-core
 RUN python3.9 -m pip install Flask
+RUN python3.9 -m pip install -U flask-cors
 RUN python3.9 -m pip install gTTS
 RUN python3.9 -m pip install -U openai-whisper
 RUN python3.9 -m pip install --upgrade --no-deps --force-reinstall git+https://github.com/openai/whisper.git
