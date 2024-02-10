@@ -5,6 +5,7 @@ import whisper
 import torch
 from flask_cors import CORS
 from gtts import gTTS
+import functions
 
 
 UPLOAD_FOLDER = 'files'
@@ -13,6 +14,7 @@ ALLOWED_EXTENSIONS = {'mp3', 'wav'}
 # Cargando whisper
 device = 'cuda' if torch.cuda.is_available() else 'cpu'
 model_whisper = whisper.load_model("small").to(device)
+unet = functions.load_model(16)
 
 app = Flask(__name__)
 CORS(app)
@@ -39,8 +41,12 @@ def main():
             return redirect(request.url)
         if file and allowed_file(file.filename):
             file.save(os.path.join(app.instance_path, 'files', secure_filename(file.filename)))
-            # STT
-            result = model_whisper.transcribe("instance/files/" + secure_filename(file.filename))
+            
+            # Remove noise
+            audio_clean = functions.clear_audio(secure_filename(file.filename))
+
+            # Speach to Text, transcription
+            result = model_whisper.transcribe(audio_clean)
 
             data = { 
                 "text" : result["text"], 
@@ -48,6 +54,7 @@ def main():
 
             # Deleting audio file
             if os.path.exists("instance/files/" + secure_filename(file.filename)):
+                os.remove("instance/files/" + secure_filename(file.filename) + '.wav')
                 os.remove("instance/files/" + secure_filename(file.filename))
             else:
                 print("The file does not exist")

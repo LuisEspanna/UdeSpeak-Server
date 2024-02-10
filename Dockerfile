@@ -21,5 +21,11 @@ RUN python3.9 -m pip install gTTS
 RUN python3.9 -m pip install -U openai-whisper
 RUN python3.9 -m pip install --upgrade --no-deps --force-reinstall git+https://github.com/openai/whisper.git
 RUN python3.9 -m pip install setuptools-rust
+RUN python3.9 -m pip install pydub
+RUN python3.9 -m pip install ipython
+RUN python3.9 -m pip install tensorflow
+RUN python3.9 -m pip install tensorflow-io
+RUN python3.9 -m pip install librosa
+RUN python3.9 -m pip install matplotlib
 CMD ["flask", "run", "--host=0.0.0.0"]
 EXPOSE 5000
