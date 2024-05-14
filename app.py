@@ -12,7 +12,7 @@ ALLOWED_EXTENSIONS = {'mp3', 'wav'}
 
 # Cargando whisper
 device = 'cuda' if torch.cuda.is_available() else 'cpu'
-model_whisper = whisper.load_model("small").to(device)
+model_whisper = whisper.load_model("base.en").to(device)
 
 app = Flask(__name__)
 CORS(app)
@@ -45,6 +45,8 @@ def main():
             data = { 
                 "text" : result["text"], 
             }
+
+            #app.logger.error('%s ', 'STT: ' + result["text"])
 
             # Deleting audio file
             if os.path.exists("instance/files/" + secure_filename(file.filename)):
@@ -99,3 +101,6 @@ def file_deleting(id):
     else:
         print("The file does not exist")
     return jsonify({"status" : True})
+
+if __name__ == '__main__':
+    app.run(debug=True)
