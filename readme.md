@@ -65,6 +65,9 @@ pip install git+https://github.com/openai/whisper.git
 
 pip install --upgrade --no-deps --force-reinstall git+https://github.com/openai/whisper.git
 
+# Mac
+brew install ffmpeg
+
 # Linux
 sudo apt update && sudo apt install ffmpeg
 
@@ -106,6 +109,7 @@ docker build -t flaskapi:latest .
 ```
 
 ## Crear un contenedor
+puertos -pXXXX es el puerto host, :XXXX puerto docker
 ```bash
 docker create --gpus all -p5000:5000 --name udespeak flaskapi
 ```
@@ -128,4 +132,9 @@ docker logs --follow udespeak
 ## Parar el servidor
 ```bash
 docker stop udespeak
+```
+
+# Exponer el servidor en la web Cloudflared tunnel
+``` bash
+    cloudflared tunnel --url http://localhost:6100/
 ```

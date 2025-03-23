@@ -12,7 +12,7 @@ ALLOWED_EXTENSIONS = {'mp3', 'wav'}
 
 # Cargando whisper
 device = 'cuda' if torch.cuda.is_available() else 'cpu'
-model_whisper = whisper.load_model("base.en").to(device)
+model_whisper = whisper.load_model("tiny.en").to(device)
 
 app = Flask(__name__)
 CORS(app)
